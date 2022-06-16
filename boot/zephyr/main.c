@@ -45,7 +45,7 @@ const struct boot_uart_funcs boot_funcs = {
 };
 #endif
 
-#if defined(CONFIG_BOOT_USB_DFU_WAIT) || defined(CONFIG_BOOT_USB_DFU_GPIO)
+#if defined(CONFIG_BOOT_USB_DFU_WAIT) || defined(CONFIG_BOOT_USB_DFU_GPIO) || defined(CONFIG_BOOT_USB_DFU_FALLBACK)
 #include <usb/class/usb_dfu.h>
 #endif
 
@@ -541,6 +541,17 @@ void main(void)
 
     if (fih_not_eq(fih_rc, FIH_SUCCESS)) {
         BOOT_LOG_ERR("Unable to find bootable image");
+#ifdef CONFIG_BOOT_USB_DFU_FALLBACK
+        BOOT_LOG_ERR("Starting DFU");
+        rc = usb_enable(NULL);
+        if (rc) {
+            BOOT_LOG_ERR("Cannot enable USB");
+            FIH_PANIC;
+        } else {
+            BOOT_LOG_INF("Waiting for USB DFU");
+            wait_for_usb_dfu(K_FOREVER);
+        }
+#endif
         FIH_PANIC;
     }
 

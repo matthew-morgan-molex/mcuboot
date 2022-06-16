@@ -401,6 +401,14 @@ config BOOT_USB_DFU_GPIO
 	help
 	  If y, MCUboot uses GPIO to detect whether to invoke USB DFU.
 
+config BOOT_USB_DFU_FALLBACK
+       bool "DFU Mode triggered if no valid images"
+       select USB_DEVICE_STACK
+       select USB_DFU_CLASS
+       select IMG_MANAGER
+       help
+         If y, MCUboot uses invokes USB DFU if there are no valid images.
+
 endchoice
 
 config BOOT_USB_DFU_WAIT_DELAY_MS
