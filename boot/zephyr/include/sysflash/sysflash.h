@@ -3,8 +3,9 @@
 #ifndef __SYSFLASH_H__
 #define __SYSFLASH_H__
 
-#include <zephyr/devicetree.h>
 #include <mcuboot_config/mcuboot_config.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/storage/flash_map.h>
 
 #ifndef CONFIG_SINGLE_APPLICATION_SLOT
 
@@ -47,11 +48,6 @@
 
 #define FLASH_AREA_IMAGE_PRIMARY(x)	FIXED_PARTITION_ID(slot0_partition)
 #define FLASH_AREA_IMAGE_SECONDARY(x)	FIXED_PARTITION_ID(slot0_partition)
-/* NOTE: Scratch parition is not used by single image DFU but some of
- * functions in common files reference it, so the definitions has been
- * provided to allow compilation of common units.
- */
-#define FLASH_AREA_IMAGE_SCRATCH	0
 
 #endif /* CONFIG_SINGLE_APPLICATION_SLOT */
 

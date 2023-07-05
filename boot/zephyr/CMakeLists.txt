@@ -6,19 +6,6 @@
 
 cmake_minimum_required(VERSION 3.13.1)
 
-# Add a common dts overlay necessary to ensure mcuboot is linked into,
-# and fits inside, the boot partition. (If the user specified a
-# DTC_OVERLAY_FILE on the CMake command line, we need to append onto
-# the list).
-if(DTC_OVERLAY_FILE)
-  set(DTC_OVERLAY_FILE
-    "${DTC_OVERLAY_FILE} ${CMAKE_CURRENT_LIST_DIR}/dts.overlay"
-    CACHE STRING "" FORCE
-    )
-else()
-  set(DTC_OVERLAY_FILE ${CMAKE_CURRENT_LIST_DIR}/dts.overlay)
-endif()
-
 # Enable Zephyr runner options which request mass erase if so
 # configured.
 #
@@ -113,7 +100,7 @@ zephyr_library_sources(
   ${BOOT_DIR}/bootutil/src/tlv.c
   ${BOOT_DIR}/bootutil/src/encrypted.c
   ${BOOT_DIR}/bootutil/src/image_rsa.c
-  ${BOOT_DIR}/bootutil/src/image_ec256.c
+  ${BOOT_DIR}/bootutil/src/image_ecdsa.c
   ${BOOT_DIR}/bootutil/src/image_ed25519.c
   ${BOOT_DIR}/bootutil/src/bootutil_misc.c
   ${BOOT_DIR}/bootutil/src/fault_injection_hardening.c
@@ -251,12 +238,7 @@ endif()
 if(CONFIG_MCUBOOT_SERIAL)
   zephyr_sources(${BOOT_DIR}/zephyr/serial_adapter.c)
   zephyr_sources(${BOOT_DIR}/boot_serial/src/boot_serial.c)
-  zephyr_sources(${BOOT_DIR}/boot_serial/src/serial_recovery_cbor.c)
-  zephyr_sources(${BOOT_DIR}/boot_serial/src/zcbor_decode.c)
-  zephyr_sources(${BOOT_DIR}/boot_serial/src/zcbor_encode.c)
-  zephyr_sources(${BOOT_DIR}/boot_serial/src/zcbor_common.c)
-
-  zephyr_sources_ifdef(CONFIG_BOOT_MGMT_ECHO ${BOOT_DIR}/boot_serial/src/serial_recovery_echo.c)
+  zephyr_sources(${BOOT_DIR}/boot_serial/src/zcbor_bulk.c)
 
   zephyr_include_directories(${BOOT_DIR}/bootutil/include)
   zephyr_include_directories(${BOOT_DIR}/boot_serial/include)
