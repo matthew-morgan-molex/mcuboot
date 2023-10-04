@@ -3,7 +3,7 @@
 
   - Copyright (c) 2017-2020 Linaro LTD
   - Copyright (c) 2017-2019 JUUL Labs
-  - Copyright (c) 2019-2021 Arm Limited
+  - Copyright (c) 2019-2023 Arm Limited
 
   - Original license:
 
@@ -107,8 +107,8 @@ struct image_tlv {
 #define IMAGE_TLV_KEYHASH           0x01   /* hash of the public key */
 #define IMAGE_TLV_SHA256            0x10   /* SHA256 of image hdr and body */
 #define IMAGE_TLV_RSA2048_PSS       0x20   /* RSA2048 of hash output */
-#define IMAGE_TLV_ECDSA224          0x21   /* ECDSA of hash output */
-#define IMAGE_TLV_ECDSA256          0x22   /* ECDSA of hash output */
+#define IMAGE_TLV_ECDSA224          0x21   /* ECDSA of hash output - Not supported anymore */
+#define IMAGE_TLV_ECDSA_SIG         0x22   /* ECDSA of hash output */
 #define IMAGE_TLV_RSA3072_PSS       0x23   /* RSA3072 of hash output */
 #define IMAGE_TLV_ED25519           0x24   /* ED25519 of hash output */
 #define IMAGE_TLV_ENC_RSA2048       0x30   /* Key encrypted with RSA-OAEP-2048 */
@@ -226,13 +226,13 @@ allows hundreds to thousands of field upgrades in production is recommended.
 swap-using scratch algorithm assumes that the primary and the secondary image
 slot areas sizes are equal.
 The maximum image size available for the application
-will be:  
+will be:
 ```
 maximum-image-size = image-slot-size - image-trailer-size
 ```
 
-Where:  
-  `image-slot-size` is the size of the image slot.  
+Where:
+  `image-slot-size` is the size of the image slot.
   `image-trailer-size` is the size of the image trailer.
 
 ### [Swap without using scratch](#image-swap-no-scratch)
@@ -241,8 +241,8 @@ This algorithm is an alternative to the swap-using-scratch algorithm.
 It uses an additional sector in the primary slot to make swap possible.
 The algorithm works as follows:
 
-  1.	Moves all sectors of the primary slot up by one sector.  
-    Beginning from N=0:  
+  1.	Moves all sectors of the primary slot up by one sector.
+    Beginning from N=0:
   2.	Copies the N-th sector from the secondary slot to the N-th sector of the
   primary slot.
   3.	Copies the (N+1)-th sector from the primary slot to the N-th sector of the
@@ -257,13 +257,13 @@ The algorithm is limited to support sectors of the same
 sector layout. All slot's sectors should be of the same size.
 
 When using this algorithm the maximum image size available for the application
-will be:  
+will be:
 ```
 maximum-image-size = (N-1) * slot-sector-size - image-trailer-sectors-size
 ```
 
-Where:  
-  `N` is the number of sectors in the primary slot.  
+Where:
+  `N` is the number of sectors in the primary slot.
   `image-trailer-sectors-size` is the size of the image trailer rounded up to
   the total size of sectors its occupied. For instance if the image-trailer-size
   is equal to 1056 B and the sector size is equal to 1024 B, then
@@ -1468,8 +1468,8 @@ are issued from the MCUboot source directory):
 ```sh
 $ mkdir docker
 $ ./ci/fih-tests_install.sh
-$ FIH_LEVEL=MCUBOOT_FIH_PROFILE_MEDIUM BUILD_TYPE=RELEASE SKIP_SIZE=2 \
-    DAMAGE_TYPE=SIGNATURE ./ci/fih-tests_run.sh
+$ FIH_LEVEL=MEDIUM BUILD_TYPE=RELEASE SKIP_SIZE=2 DAMAGE_TYPE=SIGNATURE \
+     ./ci/fih-tests_run.sh
 ```
 On the travis CI the environment variables in the last command are set based on
 the configs provided in the `.travis.yaml`

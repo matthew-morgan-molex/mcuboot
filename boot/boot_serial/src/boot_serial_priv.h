@@ -40,7 +40,9 @@ extern "C" {
 #define MGMT_ERR_EUNKNOWN       1
 #define MGMT_ERR_ENOMEM         2
 #define MGMT_ERR_EINVAL         3
+#define MGMT_ERR_ENOENT         5
 #define MGMT_ERR_ENOTSUP        8
+#define MGMT_ERR_EBUSY		10
 
 #define NMGR_OP_READ            0
 #define NMGR_OP_WRITE           2
@@ -53,6 +55,10 @@ extern "C" {
 #define NMGR_ID_CONS_ECHO_CTRL  1
 #define NMGR_ID_RESET           5
 
+#ifndef __packed
+#define __packed __attribute__((__packed__))
+#endif
+
 struct nmgr_hdr {
     uint8_t  nh_op;             /* NMGR_OP_XXX */
     uint8_t  nh_flags;
@@ -60,7 +66,7 @@ struct nmgr_hdr {
     uint16_t nh_group;          /* NMGR_GROUP_XXX */
     uint8_t  nh_seq;            /* sequence number */
     uint8_t  nh_id;             /* message ID within group */
-};
+} __packed;
 
 /*
  * From imgmgr.h
