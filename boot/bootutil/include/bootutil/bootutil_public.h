@@ -43,6 +43,7 @@
 #include <string.h>
 #include <flash_map_backend/flash_map_backend.h>
 #include <mcuboot_config/mcuboot_config.h>
+#include <bootutil/image.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -84,8 +85,10 @@ extern "C" {
 
 #ifdef MCUBOOT_BOOT_MAX_ALIGN
 
+#if defined(MCUBOOT_SWAP_USING_MOVE) || defined(MCUBOOT_SWAP_USING_SCRATCH)
 _Static_assert(MCUBOOT_BOOT_MAX_ALIGN >= 8 && MCUBOOT_BOOT_MAX_ALIGN <= 32,
-               "Unsupported value for MCUBOOT_BOOT_MAX_ALIGN");
+               "Unsupported value for MCUBOOT_BOOT_MAX_ALIGN for SWAP upgrade modes");
+#endif
 
 #define BOOT_MAX_ALIGN          MCUBOOT_BOOT_MAX_ALIGN
 #define BOOT_MAGIC_ALIGN_SIZE   ALIGN_UP(BOOT_MAGIC_SZ, BOOT_MAX_ALIGN)
@@ -293,6 +296,18 @@ boot_read_swap_state(const struct flash_area *fa,
  */
 int
 boot_set_next(const struct flash_area *fa, bool active, bool confirm);
+
+/**
+ * Attempts to load image header from flash; verifies flash header fields.
+ *
+ * @param[in]   fa_p    flash area pointer
+ * @param[out]  hdr     buffer for image header
+ *
+ * @return              0 on success, error code otherwise
+ */
+int
+boot_image_load_header(const struct flash_area *fa_p,
+                       struct image_header *hdr);
 
 #ifdef __cplusplus
 }

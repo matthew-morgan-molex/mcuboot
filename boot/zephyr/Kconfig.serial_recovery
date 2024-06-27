@@ -13,6 +13,7 @@ menuconfig MCUBOOT_SERIAL
 	select BASE64
 	select CRC
 	select ZCBOR
+	depends on !BOOT_FIRMWARE_LOADER
 	help
 	  If y, enables a serial-port based update mode. This allows
 	  MCUboot itself to load update images into flash over a UART.
@@ -48,6 +49,7 @@ endchoice
 
 config MCUBOOT_SERIAL_DIRECT_IMAGE_UPLOAD
 	bool "Allow to select image number for DFU"
+	depends on !SINGLE_APPLICATION_SLOT
 	help
 	  With the option enabled, the mcuboot serial recovery will
 	  respect the "image" field in mcumgr image update frame
@@ -96,7 +98,7 @@ config BOOT_SERIAL_MAX_RECEIVE_SIZE
 
 config BOOT_ERASE_PROGRESSIVELY
 	bool "Erase flash progressively when receiving new firmware"
-	default y if SOC_FAMILY_NRF
+	default y if SOC_FAMILY_NORDIC_NRF
 	help
 	 If enabled, flash is erased as necessary when receiving new firmware,
 	 instead of erasing the whole image slot at once. This is necessary
@@ -127,22 +129,7 @@ config BOOT_MGMT_CUSTOM_STORAGE_ERASE
 	  Note that the storage partition needs to be defined, in DTS, otherwise
 	  enabling the option will cause a compilation to fail.
 
-config BOOT_MGMT_CUSTOM_IMG_LIST
-	bool "Enable custom image list command"
-	help
-	  The option enables command which returns versions and installation
-	  statuses (custom property) for all images.
-
 endif # ENABLE_MGMT_PERUSER
-
-config BOOT_SERIAL_ENCRYPT_EC256
-	bool "Support for encrypted upgrade images using ECIES-P256 in serial recovery upload"
-	default n
-	help
-	  If y, uploaded images via serial recovery can be decrypted
-	  on the fly when upgrading to the primary slot. The
-	  encryption mechanism used in this case is ECIES using primitives
-	  described under "ECIES-P256 encryption" in docs/encrypted_images.md.
 
 menu "Entrance methods"
 
