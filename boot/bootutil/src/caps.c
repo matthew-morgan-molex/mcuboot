@@ -35,6 +35,9 @@ uint32_t bootutil_get_caps(void)
 #if defined(MCUBOOT_SIGN_EC256)
     res |= BOOTUTIL_CAP_ECDSA_P256;
 #endif
+#if defined(MCUBOOT_SIGN_EC384)
+    res |= BOOTUTIL_CAP_ECDSA_P384;
+#endif
 #if defined(MCUBOOT_SIGN_ED25519)
     res |= BOOTUTIL_CAP_ED25519;
 #endif
@@ -74,6 +77,9 @@ uint32_t bootutil_get_caps(void)
 #endif
 #if defined(MCUBOOT_DIRECT_XIP)
     res |= BOOTUTIL_CAP_DIRECT_XIP;
+#endif
+#if defined(MCUBOOT_HW_ROLLBACK_PROT)
+    res |= BOOTUTIL_CAP_HW_ROLLBACK_PROT;
 #endif
 
     return res;
